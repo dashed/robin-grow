@@ -245,7 +245,8 @@
                     if (isBotSpam(msgText)) $(msg).hide();
 
                     if (!hasChannel(msgText, 'PCFLMSG')) {
-                        $(msg).css("font-size", "5px");
+                        $(msg).css("font-size", "0.7rem");
+                        $(msg).css("opacity", "0.75");
                     }
 
                     messageCount++;
