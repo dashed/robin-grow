@@ -399,10 +399,6 @@
     }
 
 
-    // Settings
-    // DOM Setup begin
-    $("#robinVoteWidget").append('<div class="addon"><div class="robin-chat--vote" style="font-weight: bold; padding: 5px;" id="openBtn">Open Settings</div></div>'); // Open Settings
-    $(".robin-chat--sidebar").before('<div class="robin-chat--sidebar" style="display:none;" id="settingContainer"><div class="robin-chat--sidebar-widget robin-chat--vote-widget" id="settingContent"></div></div>'); // Setting container
 
     function openSettings() {
         $(".robin-chat--sidebar").hide();
@@ -414,9 +410,7 @@
         $(".robin-chat--sidebar").show();
         $("#settingContainer").hide();
     }
-    $("#settingContent").append('<div class="robin-chat--vote" style="font-weight: bold; padding: 5px;" id="closeBtn">Close Settings</div>');
-    $("#closeBtn").on("click", closeSettings);
-    // Dom Setup end
+
     function saveSetting(settings) {
         localStorage["robin-grow-settings"] = JSON.stringify(settings)
     }
@@ -442,10 +436,6 @@
             });
         settings[name] = defaultSetting;
     }
-
-    // Add version at the end
-    $("#settingContent").append('<div class="robin-chat--sidebar-widget robin-chat--report" style="text-align:center;"><a target="_blank" href="https://github.com/vartan/robin-grow">robin-grow - Version ' + GM_info.script.version + '</a></div>');
-
 
     setInterval(update, 10000);
     update();
