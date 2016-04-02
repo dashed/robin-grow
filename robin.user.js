@@ -307,7 +307,7 @@
         $("#settingContent").append('<div id="robinDesktopNotifier" class="robin-chat--sidebar-widget robin-chat--notification-widget"><label><input type="text" name="setting-' + name + '">' + description + '</label></div>');
         $("input[name='setting-" + name + "']").prop("defaultValue", defaultSetting)
             .on("change", function() {
-                settings[name] = !$(this).val();
+                settings[name] = $(this).val();
                 saveSetting(settings);
             });
         settings[name] = defaultSetting;
