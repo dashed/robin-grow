@@ -309,10 +309,9 @@
                     text.indexOf("Autovoter") > -1 ||
                     (/[\u0080-\uFFFF]/.test(text));
 
-                if(!shouldFilter
-                    && settings['filterChannel']
+                if(settings['filterChannel']
                     && String(settings['channel']).length > 0
-                    && !hasChannel(msgText, settings['channel'])) {
+                    && !hasChannel(text, settings['channel'])) {
                     shouldFilter = true;
                 }
 
