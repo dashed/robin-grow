@@ -16,6 +16,11 @@
     $("#robinVoteWidget").append('<div class="addon"><div class="robin-chat--vote" style="font-weight: bold; padding: 5px;cursor: pointer;" id="openBtn">Open Settings</div></div>'); // Open Settings
     $(".robin-chat--sidebar").before('<div class="robin-chat--sidebar" style="display:none;" id="settingContainer"><div class="robin-chat--sidebar-widget robin-chat--vote-widget" id="settingContent"></div></div>'); // Setting container
 
+    function hasChannel(source, channel) {
+        channel = String(channel).toLowerCase();
+        return String(source).toLowerCase().startsWith(channel);
+    }
+
     function openSettings() {
         $(".robin-chat--sidebar").hide();
         $("#settingContainer").show();
@@ -58,9 +63,21 @@
         }
     }
 
+    function addInputSetting(name, description, defaultSetting) {
+        $("#settingContent").append('<div id="robinDesktopNotifier" class="robin-chat--sidebar-widget robin-chat--notification-widget"><label><input type="text" name="setting-' + name + '">' + description + '</label></div>');
+        $("input[name='setting-" + name + "']").prop("defaultValue", defaultSetting)
+            .on("change", function() {
+                settings[name] = $(this).val();
+                saveSetting(settings);
+            });
+        settings[name] = defaultSetting;
+    }
+
     // Options begin
     addBoolSetting("removeSpam", "Remove bot spam", true);
     addBoolSetting("findAndHideSpam", "Removes messages that have been send more than 3 times", true);
+    addInputSetting("channel", "Channel filter", "");
+    addBoolSetting("filterChannel", "Filter by channel", false);
     // Options end
     $("#robinDesktopNotifier").detach().appendTo("#settingContent");
     // Add version at the end
@@ -283,16 +300,23 @@
         if (settings["removeSpam"]) {
             $(".robin--user-class--user").filter(function(num, message) {
                 var text = $(message).find(".robin-message--message").text();
-                var filter = text.indexOf("[") === 0 ||
+
+
+                var shouldFilter = text.indexOf("[") === 0 ||
                     text == "voted to STAY" ||
                     text == "voted to GROW" ||
                     text == "voted to ABANDON" ||
                     text.indexOf("Autovoter") > -1 ||
                     (/[\u0080-\uFFFF]/.test(text));
 
-                ; // starts with a [ or has "Autovoter"
-                // if(filter)console.log("removing "+text);
-                return filter;
+                if(!shouldFilter
+                    && settings['filterChannel']
+                    && String(settings['channel']).length > 0
+                    && !hasChannel(msgText, settings['channel'])) {
+                    shouldFilter = true;
+                }
+
+                return shouldFilter;
             }).remove();
         }
     }
@@ -418,11 +442,6 @@
             });
         settings[name] = defaultSetting;
     }
-
-    // Options begin
-    addBoolSetting("removeSpam", "Remove bot spam", true);
-    addBoolSetting("findAndHideSpam", "Removes messages that have been send more than 3 times", true);
-    // Options end
 
     // Add version at the end
     $("#settingContent").append('<div class="robin-chat--sidebar-widget robin-chat--report" style="text-align:center;"><a target="_blank" href="https://github.com/vartan/robin-grow">robin-grow - Version ' + GM_info.script.version + '</a></div>');
