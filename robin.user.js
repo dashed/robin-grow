@@ -11,6 +11,12 @@
 // @grant   GM_setValue
 // ==/UserScript==
 (function() {
+
+    function hasChannel(source, channel) {
+        channel = String(channel).toLowerCase();
+        return String(source).toLowerCase().startsWith(channel);
+    }
+
     function addMins(date, mins) {
         var newDateObj = new Date(date.getTime() + mins * 60000);
         return newDateObj;
@@ -237,6 +243,10 @@
                     var msg = jq[0];
                     var msgText = msg.children[2].textContent;
                     if (isBotSpam(msgText)) $(msg).hide();
+
+                    if (hasChannel(msgText, 'PCFLMSG')) {
+                        $('.changeMe').css("font-size", "5px");
+                    }
 
                     messageCount++;
 
